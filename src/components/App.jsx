@@ -10,7 +10,6 @@ export default function App() {
   const { data, isFetching } = useFetchContactsQuery();
   const [deleteContact] = useDeleteContactMutation();
 
-  console.log(data);
   return (
     <div
       style={{
