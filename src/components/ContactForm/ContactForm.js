@@ -1,18 +1,17 @@
 import css from 'components/ContactForm/ContactForm.module.css';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContacts } from 'redux/contact/contact';
+import { useCreateContactMutation } from 'redux/contact/contactsSlice';
 
-export default function ContactForm() {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contact.items);
 
+const ContactForm = ({ contacts }) => {
+ 
+  const [createContact] = useCreateContactMutation();
   const formSubmit = event => {
     const form = event.currentTarget;
     event.preventDefault();
     const dataContact = {
       name: form.elements.name.value,
-      number: form.elements.number.value,
+      phone: form.elements.number.value,
     };
 
     const repeatContacts = contacts.find(
@@ -22,7 +21,7 @@ export default function ContactForm() {
     if (repeatContacts) {
       alert(`${repeatContacts.name} is already in contacts`);
     } else {
-      dispatch(addContacts(dataContact));
+      createContact(dataContact);
     }
     form.reset();
   };
@@ -53,8 +52,9 @@ export default function ContactForm() {
       <button>Add contact</button>
     </form>
   );
-}
+};
+export default ContactForm;
 
 ContactForm.propTypes = {
-  contacts: PropTypes.arrayOf(PropTypes.string),
+  contacts: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)),
 };

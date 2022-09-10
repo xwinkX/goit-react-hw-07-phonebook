@@ -1,17 +1,16 @@
-import { useEffect } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
-
-import { useSelector } from 'react-redux';
+import {
+  useDeleteContactMutation,
+  useFetchContactsQuery,
+} from 'redux/contact/contactsSlice';
 
 export default function App() {
-  const contacts = useSelector(state => state.contact.items);
+  const { data, isFetching } = useFetchContactsQuery();
+  const [deleteContact] = useDeleteContactMutation();
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
+  console.log(data);
   return (
     <div
       style={{
@@ -24,10 +23,11 @@ export default function App() {
       }}
     >
       <h1>Phonebook</h1>
-      <ContactForm />
+      <ContactForm contacts={data} />
       <h2>Contacts</h2>
       <Filter />
-      <ContactList />
+      {isFetching && <p>...loading</p>}
+      {data && <ContactList contacts={data} onDelete={deleteContact} />}
     </div>
   );
 }
